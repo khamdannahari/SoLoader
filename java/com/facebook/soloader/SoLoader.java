@@ -321,6 +321,23 @@ public class SoLoader {
         }
       }
 
+      if (context != null) {
+        File splitCompatFilesPath = new File(context.getFilesDir(), "splitcompat");
+
+        if (splitCompatFilesPath.exists() && splitCompatFilesPath.isDirectory()) {
+          for (File splitDir : splitCompatFilesPath.listFiles()) {
+            File nativeLibsDirs = new File(splitDir, "native-libraries");
+
+            if (nativeLibsDirs.exists() && splitCompatFilesPath.isDirectory()) {
+              for (File nativeLibsDir : nativeLibsDirs.listFiles()) {
+                Log.d(TAG, "adding backup source: " + nativeLibsDir.getAbsolutePath());
+                soSources.add(0, new DirectorySoSource(nativeLibsDir.getAbsoluteFile(), DirectorySoSource.RESOLVE_DEPENDENCIES));
+              }
+            }
+          }
+        }
+      }
+
       SoSource[] finalSoSources = soSources.toArray(new SoSource[soSources.size()]);
       int prepareFlags = makePrepareFlags();
       for (int i = finalSoSources.length; i-- > 0; ) {
